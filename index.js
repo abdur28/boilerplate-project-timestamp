@@ -24,22 +24,20 @@ app.get("/api/:date?", function (req, res) {
     const time = new Date();
     res.json({unix: time.getTime(), utc: time.toUTCString()})
   } else {
-    if (date) {
-      if (isNaN(Date.parse(date))) {
-        const time = new Date(date);
-        if (time.toString() === "Invalid Date") {
-          res.json({error: "Invalid Date"})
-        } else {
-          res.json({unix: time.getTime(), utc: time.toUTCString()})
-        }
+    const notNumber = date.split("").some(x => isNaN(x));
+    if (notNumber) {
+      const time = new Date(date);
+      if (time.toString() === "Invalid Date") {
+        res.json({error: "Invalid Date"})
       } else {
-        const time = new Date(parseInt(date));
         res.json({unix: time.getTime(), utc: time.toUTCString()})
       }
+    } else {
+      const time = new Date(parseInt(date));
+      res.json({unix: time.getTime(), utc: time.toUTCString()})
     }
   }
-})
-
+});
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
